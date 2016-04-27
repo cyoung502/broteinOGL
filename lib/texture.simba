@@ -1,0 +1,185 @@
+{$include_once ogLib/lib/core/core.simba}
+(*
+findTexture
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function findTexture(textureID : Integer) : Boolean;
+
+This function will search for the Texture ID in question and will return true
+if the Texture Array is not empty.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if (findTexture(ID_POTION)) then
+      takeDose();
+
+*)
+function findTexture(textureID : Integer) : Boolean;
+begin
+  result := not ogl.getTextures(textureID).isEmpty();
+end;
+
+(*
+findTexture
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function findTexture(textureID, colorID : Integer) : Boolean; overload;
+
+This function will search for the Texture ID and the Color ID in question and
+will return true if the Texture Array is not empty.  Use this function when
+searching for the texture ID isn't accurate enough (as it often isn't.)
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if (findTexture(ID_POTION, CID_POTION)) then
+      takeDose();
+
+*)
+function findTexture(textureID, colorID : Integer) : Boolean; overload;
+begin
+  result := not ogl.getTextures([textureID], [colorID]).isEmpty();
+end;
+
+function findTexture(textureID, colorId : Integer; b : tBox) : Boolean; overload;
+begin
+  result := not ogl.getTextures(textureID, colorId, b).isEmpty();
+end;
+
+function hoverTexture(textureID, x, y, ellipseSize : Integer) : Boolean;
+var
+  ta: glTextureArray;
+  p : TPoint;
+begin
+  ta := ogl.getTextures(textureID);
+  if ta.isEmpty() then
+    result := false
+  else
+  begin
+    p := ogl.getClientMidPoint().closest(ta)[0].randomizePointEllipse(ellipseSize);
+    mouse.move(point(p.x + x, p.y + y));
+    result := true;
+  end;
+end;
+
+function hoverTexture(textureID, colorID, x, y, ellipseSize : Integer; b : tBox) : Boolean; overload;
+var
+  ta: glTextureArray;
+  p : TPoint;
+begin
+  ta := ogl.getTextures(textureID, colorID, b);
+  if ta.isEmpty() then
+    result := false
+  else
+  begin
+    p := ogl.getClientMidPoint().closest(ta)[0].randomizePointEllipse(ellipseSize);
+    mouse.move(point(p.x + x, p.y + y));
+    result := true;
+  end;
+end;
+
+(*
+clickTexture
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function clickTexture(textureID, x, y, ellipseSize : Integer) : Boolean;
+
+This function will search for the Texture ID and if the texture array is not
+empty the function will continue to grab the tPoint cooridnates for the texture
+and click the mouse at that point.  Uses offset and random point for the mouse
+click.  Returns false if texture array is empty, and returns true if it clicks.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if (clickTexture(ID_POTION)) then
+      writeln('Dose taken of potion...');
+
+*)
+function clickTexture(textureID, x, y, ellipseSize : Integer) : Boolean;
+var
+  ta: glTextureArray;
+  p : TPoint;
+begin
+  ta := ogl.getTextures(textureID);
+  if ta.isEmpty() then
+    result := false
+  else
+  begin
+    p := ogl.getClientMidPoint().closest(ta)[0].randomizePointEllipse(ellipseSize);
+    clickMouse(p.x + x, p.y + y, 1);
+    result := true;
+  end;
+end;
+
+function clickTexture(textureID, colorID, x, y, ellipseSize : Integer) : Boolean; overload
+var
+  ta: glTextureArray;
+  p : TPoint;
+begin
+  ta := ogl.getTextures([textureID], [colorID]);
+  if ta.isEmpty() then
+    result := false
+  else
+  begin
+    p := ogl.getClientMidPoint().closest(ta)[0].randomizePointEllipse(ellipseSize);
+    clickMouse(p.x + x, p.y + y, 1);
+    result := true;
+  end;
+end;
+
+function clickTexture(textureID, x, y, ellipseSize : Integer; b : tBox) : Boolean; overload
+var
+  ta: glTextureArray;
+  p : TPoint;
+begin
+  ta := ogl.getTextures(textureID);
+  if ta.isEmpty() then
+    result := false
+  else
+  begin
+    p := ogl.getClientMidPoint().closest(ta)[0].randomizePointEllipse(ellipseSize);
+    clickMouse(p.x + x, p.y + y, 1);
+    result := true;
+  end;
+end;
+
+function rightClickTexture(ta : glTexture; x, y, ellipseSize : Integer; option : String) : Boolean;
+var
+  p : TPoint;
+begin
+  p := ta.toPoint();
+  tMouse.rightClickOption(point(p.x + x, p.y + y), option);
+  result := true;
+end;
+
+function rightClickTexture(ta : glTexture; colorID, x, y, ellipseSize : Integer; option : String) : Boolean; overload
+var
+  p : TPoint;
+begin
+  p := ta.toPoint();
+  tMouse.rightClickOption(point(p.x + x, p.y + y), option);
+  result := true;
+end;

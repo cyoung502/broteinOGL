@@ -1,0 +1,38 @@
+{$loadlib prosocks}
+
+var
+  s: sslSocket;
+  url, user, pwd, name, recipient, cc, bcc, subject, body, bodymime, filename, filemime: string;
+
+function sendEmail(smtpUrl, username, password, displayName, emailRecipient, emailSubject, emailBody : string) : boolean;
+var
+    cc, bcc, bodymime, filename, filemime: string;
+begin
+  cc := '';
+  bcc := '';
+  bodymime := 'text/plain; charset=UTF-8';
+  filename := '';
+  filemime := '';
+  S.init();
+  s.setVerbose(true);
+  s.setSecurityPolicy(false, false, true);
+  result := (s.smtp(@smtpUrl[1], @username[1], @password[1], @displayName[1], @emailRecipient[1], @cc, @bcc, @emailSubject[1], @emailBody[1], @bodymime[1], @filename, @filemime));
+  s.free();
+end;
+
+function sendSms(smtpUrl, username, password, displayName, smsRecipient, smsBody : string) : boolean;
+var
+    cc, bcc, subject,  bodymime, filename, filemime: string;
+begin
+  cc := '';
+  bcc := '';
+  subject := '';
+  bodymime := '';
+  filename := '';
+  filemime := '';
+  S.init();
+  s.setVerbose(true);
+  s.setSecurityPolicy(false, false, true);
+  result := (s.smtp(@smtpUrl[1], @username[1], @password[1], @displayName[1], @smsRecipient[1], @cc, @bcc, @subject, @smsBody[1], @bodymime, @filename, @filemime));
+  s.free();
+end;

@@ -1,0 +1,170 @@
+{$include_once ogLib/lib/core/core.simba}
+(*
+findModel
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function findModel(modelID : Integer) : Boolean;
+
+This function will search for the Model ID in question and will return true
+if the Model Array is not empty.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if (findModel(ID_DRAGON)) then
+      attackDragon();
+
+*)
+function findModel(modelID : uInt32) : Boolean;
+begin
+  result := not ogl.getModels(modelID).isEmpty();
+end;
+
+(*
+findModel
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function findModel(modelID : array of uInt32) : Boolean; overload;
+
+This function will search for the Model IDs in question and will return true
+if the Model Array is not empty.  Used to search for multiple models at once.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if (findModel(ID_DRAGON)) then
+      attackDragon();
+
+*)
+function findModel(modelID : array of uInt32) : Boolean; overload;
+begin
+  result := not ogl.getModels(modelID).isEmpty();
+end;
+
+(*
+clickModel
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function clickModel(modelID, x, y, ellipseSize : Integer) : Boolean;
+
+This function will click on a model.  It will only click on a model if the model
+array is not empty.  If the model array is empty the function will return false
+but if there is a model it will click on a TPoint owned by the Model Array at
+index 0.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if(clickModel(ID_DRAGON)) then
+      writeln('We attacked the target...);
+
+*)
+function clickModel(modelID, x, y, ellipseSize : Integer) : Boolean;
+var
+  ma: glModelArray;
+  p : TPoint;
+begin
+  ma := ogl.getModels(modelID).getVisible();
+  if ma.isEmpty() then
+    result := false
+  else
+  begin
+    p := ma.closestTo(ogl.getClientMidPoint())[0].randomizePointEllipse(ellipseSize);
+    clickMouse(p.x + x, p.y + y, 1);
+    result := true;
+  end;
+end;
+
+(*
+clickModel
+~~~~~~~~
+
+.. code-block:: pascal
+
+    function clickModel(modelID : array of uInt32; x, y, ellipseSize : Integer) : Boolean; overload;
+
+This function will click on a model.  It will only click on a model if the model
+array is not empty.  If the model array is empty the function will return false
+but if there is a model it will click on a TPoint owned by the Model Array at
+index 0.  Overloaded function accepts an array instead of a single model.
+
+.. note::
+
+    - by Brotein
+
+Example:
+
+.. code-block:: pascal
+
+    if(clickModel([ID_DRAGON, ID_DRAGON2, ID_DRAGON3])) then
+      writeln('We attacked the target...);
+
+*)
+function clickModel(modelID : array of Int32; x, y, ellipseSize : Integer) : Boolean; overload;
+var
+  ma: glModelArray;
+  p : TPoint;
+begin
+  ma := ogl.getModels(modelID).getVisible();
+  if ma.isEmpty() then
+    result := false
+  else
+  begin
+    p := ma.closestTo(ogl.getClientMidPoint())[0].randomizePointEllipse(ellipseSize);
+    clickMouse(p.x + x, p.y + y, 1);
+    result := true;
+  end;
+end;
+
+function rightClickModel(modelID : uInt32; x, y, ellipseSize : Integer; option : array of string) : Boolean;
+var
+  ma: glModelArray;
+  p : TPoint;
+begin
+  ma := ogl.getModels(modelID).getVisible();
+  if ma.isEmpty() then
+    result := false
+  else
+  begin
+    p := ma.closestTo(ogl.getClientMidPoint())[0].randomizePointEllipse(ellipseSize);
+    tMouse.rightClickOption(point(p.x + x, p.y + y), option);
+    result := true;
+  end;
+end;
+
+function rightClickModel(modelID : array of uInt32; x, y, ellipseSize : Integer; option : array of string) : Boolean; overload;
+var
+  ma: glModelArray;
+  p : TPoint;
+begin
+  ma := ogl.getModels(modelID).getVisible();
+  if ma.isEmpty() then
+    result := false
+  else
+  begin
+    p := ma.closestTo(ogl.getClientMidPoint())[0].randomizePointEllipse(ellipseSize);
+    tMouse.rightClickOption(point(p.x + x, p.y + y), option);
+    result := true;
+  end;
+end;
